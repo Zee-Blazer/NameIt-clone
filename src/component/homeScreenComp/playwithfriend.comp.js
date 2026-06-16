@@ -36,6 +36,10 @@ const PlayWithFriendComp = () => {
                 variant="outlined"
                 sx={{ width: "100%", color: "red", paddingY: 1, marginY: 2.5, borderColor: "red" }}
             >Join a Room</Button>
+
+            <p>
+                Browse Public Rooms
+            </p>
         </div>
     )
 }
