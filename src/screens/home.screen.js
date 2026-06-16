@@ -11,7 +11,6 @@ const HomeScreen = () => {
             <NavBarComp />
             <DescripComp />
             <PlayConsoleComp />
-            Home Screen
         </>
     )
 }
