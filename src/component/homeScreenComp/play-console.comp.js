@@ -1,8 +1,16 @@
 import React, { useState } from 'react';
 
 // Firebase firestore
-// import { collection, addDoc } from "firebase/firestore";
-// import { db } from '../../firebase.config';
+import { collection, addDoc } from "firebase/firestore";
+import { signInAnonymously } from "firebase/auth";
+import { db, auth } from '../../firebase.config';
+
+// Redux
+import { useDispatch } from 'react-redux'; 
+import { newRoomId } from '../../redux/reducers/room';
+
+// Route 
+import { useNavigate } from 'react-router-dom';
 
 // Components
 import PlaySoloComp from "./playsolo.comp";
@@ -10,28 +18,33 @@ import PlayWithFriendComp from "./playwithfriend.comp";
 
 const PlayConsoleComp = () => {
 
-    const [name, useName] = useState("");
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const [name, setName] = useState();
+    const [loading, setLoading] = useState(false); 
 
     const [withFriend, setWithFriend] = useState(true);
 
-    // const addUser = async () => {
-    //     try {
-    //         const doAddRecord = await addDoc(collection(db, "users"), { name: "Josh" });
-    //     }
-    //     catch(err) {
-    //         console.log(`Got error: ${err}`);
-    //     }
-    // }
+    const addUser = async () => {
+        setLoading(true);
+        try {
+            if(name.length > 0) {
+                const currentUser = await signInAnonymously(auth);
+                const doAddRecord = await addDoc(collection(db, "users"), { name, userId: currentUser.user.uid });
+                const createRoom = await addDoc(collection(db, "rooms"), { name, userId: currentUser.user.uid, host: true });
+                dispatch(newRoomId({type: "", payload: createRoom.id}));
 
-    console.log({
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
-})
+                setName("");
+                setLoading(false);
+                navigate("/create-room");
+            }
+        }
+        catch(err) {
+            console.log(`Got error: ${err}`);
+            setLoading(false);
+        }
+    }
 
     return (
         <div className='w-4/12 border mx-auto rounded-2xl py-6 px-8'>
@@ -46,11 +59,9 @@ const PlayConsoleComp = () => {
                 >Play solo</p>
             </div>
 
-            {/* <button onClick={ addUser }>Send Request</button> */}
-
             {
                 withFriend ?
-                    <PlayWithFriendComp /> 
+                    <PlayWithFriendComp name={ name } setName={ setName } send={ addUser } loading={ loading } /> 
                     :
                     <PlaySoloComp />
             }

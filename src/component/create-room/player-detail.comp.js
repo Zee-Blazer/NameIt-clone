@@ -4,6 +4,7 @@ import { DiGhostSmall } from "react-icons/di";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { FaCircleUp } from "react-icons/fa6";
 
+
 const PlayerDetailComp = ({ type, name, num }) => {
 
     return (

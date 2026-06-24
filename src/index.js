@@ -4,13 +4,19 @@ import ReactDOM from 'react-dom/client';
 // Styling
 import "./style.css";
 
+// React Redux
+import { Provider } from 'react-redux';
+import { store } from './redux/store';
+
 // Router
 import RouterComp from './router';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterComp />
+    <Provider store={ store }>
+      <RouterComp />
+    </Provider>
   </React.StrictMode>
 );
 
