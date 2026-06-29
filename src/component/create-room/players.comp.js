@@ -1,3 +1,11 @@
+import React, { useState, useEffect } from 'react';
+
+// Firebase
+import { collection, onSnapshot, doc } from 'firebase/firestore';
+import { db } from '../../firebase.config';
+
+// Redux
+import { useSelector } from 'react-redux';
 
 // MUI component
 import Button from '@mui/material/Button';
@@ -6,6 +14,28 @@ import Button from '@mui/material/Button';
 import PlayerDetailComp from './player-detail.comp';
 
 const PlayersComp = () => {
+
+    const roomId = useSelector( state => state.room.roomId.payload );
+
+    const [users, setUsers] = useState();
+
+    const handleReadDB = async () => {
+        
+    }
+
+    useEffect(() => {
+        const people = onSnapshot(doc(db, `rooms`, roomId), (docSnapshot) => {
+            if (docSnapshot.exists()) {
+                const roomData = { ...docSnapshot.data() };
+                // console.log([ roomData.members ]);
+                setUsers([ roomData.members ]);
+            } else {
+                console.log("This room does not exist!");
+            }
+        })
+    }, []);
+
+    console.log(users);
 
     return (
         <div className="rounded shadow w-7/12 mx-auto my-8 py-6 px-8 text-center">
@@ -17,8 +47,14 @@ const PlayersComp = () => {
             </div>
 
             <div>
-                <PlayerDetailComp type="host" name="Glyte" num={1} />
-                <PlayerDetailComp type="player" name="Bolaji" num={2} />
+                {
+                    users.map( (items, i) => {
+                        
+                        return (
+                            <PlayerDetailComp type={items.host ? "host" : "player"} name={items.name} num={i+1} />
+                        )
+                    } )
+                }
             </div>
         </div>
     )

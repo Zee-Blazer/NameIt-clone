@@ -32,7 +32,7 @@ const PlayConsoleComp = () => {
             if(name.length > 0) {
                 const currentUser = await signInAnonymously(auth);
                 const doAddRecord = await addDoc(collection(db, "users"), { name, userId: currentUser.user.uid });
-                const createRoom = await addDoc(collection(db, "rooms"), { name, userId: currentUser.user.uid, host: true });
+                const createRoom = await addDoc(collection(db, "rooms"), { members: { name, userId: currentUser.user.uid, host: true }});
                 dispatch(newRoomId({type: "", payload: createRoom.id}));
 
                 setName("");

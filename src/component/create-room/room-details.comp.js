@@ -5,6 +5,9 @@ import { FaRegCopy } from "react-icons/fa";
 // Redux
 import { useSelector } from "react-redux";
 
+// Components
+import CopyTextComp from "../utilsComp/copy-text.comp";
+
 const RoomDetailsComp = () => {
 
     const roomId = useSelector( (state) => state.room.roomId );
@@ -17,10 +20,16 @@ const RoomDetailsComp = () => {
                 <p>ROOM CODE</p>
                 <div className="flex justify-self-center mx-auto text-center">
                     <h3 className="text-2xl capitalize text-red-700 font-bold">{ roomId ? roomId.payload : "Empty" }</h3>
-                    <p className="flex items-center ml-3 cursor-pointer bg-white p-1 rounded hover:bg-red-200 transition">
-                        <FaRegCopy />
-                        Copy Code
-                    </p>
+
+                    <CopyTextComp text={ roomId.payload }>
+                        <p 
+                            className="flex items-center ml-3 cursor-pointer bg-white p-1 rounded hover:bg-red-200 transition"
+                        >
+                            <FaRegCopy />
+                            Copy Code
+                        </p>
+                    </CopyTextComp>
+
                 </div>
             </div>
         </div>
